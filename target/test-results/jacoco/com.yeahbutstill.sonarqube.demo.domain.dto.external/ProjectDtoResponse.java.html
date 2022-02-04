@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectDtoResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sonarqube</a> &gt; <a href="index.source.html" class="el_package">com.yeahbutstill.sonarqube.demo.domain.dto.external</a> &gt; <span class="el_source">ProjectDtoResponse.java</span></div><h1>ProjectDtoResponse.java</h1><pre class="source lang-java linenums">package com.yeahbutstill.sonarqube.demo.domain.dto.external;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.yeahbutstill.sonarqube.demo.domain.dao.Employee;
+import com.yeahbutstill.sonarqube.demo.domain.dao.Project;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+<span class="nc bnc" id="L14" title="All 54 branches missed.">@Data</span>
+<span class="nc" id="L15">@SuperBuilder</span>
+<span class="nc" id="L16">@NoArgsConstructor</span>
+<span class="nc" id="L17">@AllArgsConstructor</span>
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ProjectDtoResponse {
+
+<span class="nc" id="L21">  private Long id;</span>
+<span class="nc" id="L22">  private String projectCode;</span>
+<span class="nc" id="L23">  private String projectDescription;</span>
+<span class="nc" id="L24">  private Long mandays;</span>
+<span class="nc" id="L25">  private List&lt;EmployeeDtoResponse&gt; memberEmployee;</span>
+<span class="nc" id="L26">  private EmployeeDtoResponse leadEmployee;</span>
+
+<span class="fc" id="L28">  public ProjectDtoResponse(Project project) {</span>
+<span class="fc" id="L29">    this.id = project.getId();</span>
+<span class="fc" id="L30">    this.projectCode = project.getProjectCode();</span>
+<span class="fc" id="L31">    this.projectDescription = project.getProjectDescription();</span>
+<span class="fc" id="L32">    this.mandays = project.getMandays();</span>
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    if (!project.getMemberEmployee().isEmpty()) {</span>
+<span class="nc" id="L35">      memberEmployee = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L36" title="All 2 branches missed.">      for (Employee employee : project.getMemberEmployee()) {</span>
+<span class="nc" id="L37">        EmployeeDtoResponse employeeDtoResponse = new EmployeeDtoResponse();</span>
+<span class="nc" id="L38">        employeeDtoResponse.setId(employee.getId());</span>
+<span class="nc" id="L39">        employeeDtoResponse.setNik(employee.getNik());</span>
+<span class="nc" id="L40">        employeeDtoResponse.setFirstName(employee.getFirstName());</span>
+<span class="nc" id="L41">        employeeDtoResponse.setLastName(employee.getLastName());</span>
+<span class="nc" id="L42">        employeeDtoResponse.setSalary(employee.getSalary());</span>
+<span class="nc" id="L43">        employeeDtoResponse.setGender(employee.getGender());</span>
+<span class="nc" id="L44">        employeeDtoResponse.setTitle(employee.getTitle());</span>
+<span class="nc" id="L45">        memberEmployee.add(employeeDtoResponse);</span>
+<span class="nc" id="L46">      }</span>
+    }
+
+<span class="nc bnc" id="L49" title="All 2 branches missed.">    if (project.getLeadEmployee() != null) {</span>
+<span class="nc" id="L50">      leadEmployee = new EmployeeDtoResponse();</span>
+<span class="nc" id="L51">      Employee employee = project.getLeadEmployee();</span>
+<span class="nc" id="L52">      leadEmployee.setId(employee.getId());</span>
+<span class="nc" id="L53">      leadEmployee.setNik(employee.getNik());</span>
+<span class="nc" id="L54">      leadEmployee.setFirstName(employee.getFirstName());</span>
+<span class="nc" id="L55">      leadEmployee.setLastName(employee.getLastName());</span>
+<span class="nc" id="L56">      leadEmployee.setSalary(employee.getSalary());</span>
+<span class="nc" id="L57">      leadEmployee.setGender(employee.getGender());</span>
+<span class="nc" id="L58">      leadEmployee.setTitle(employee.getTitle());</span>
+    }
+<span class="nc" id="L60">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,4 @@
+/home/yeahbutstill/IdeaProjects/spring-boot-code-analysis-with-sonarqube/src/test/java/com/yeahbutstill/sonarqube/demo/controller/ProjectControllerTest.java
+/home/yeahbutstill/IdeaProjects/spring-boot-code-analysis-with-sonarqube/src/test/java/com/yeahbutstill/sonarqube/demo/service/ProjectServiceTest.java
+/home/yeahbutstill/IdeaProjects/spring-boot-code-analysis-with-sonarqube/src/test/java/com/yeahbutstill/sonarqube/demo/service/EmployeeServiceTest.java
+/home/yeahbutstill/IdeaProjects/spring-boot-code-analysis-with-sonarqube/src/test/java/com/yeahbutstill/sonarqube/demo/controller/EmployeeControllerTest.java

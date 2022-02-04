@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sonarqube</a> &gt; <a href="index.source.html" class="el_package">com.yeahbutstill.sonarqube.demo.service.implementation</a> &gt; <span class="el_source">EmployeeServiceImpl.java</span></div><h1>EmployeeServiceImpl.java</h1><pre class="source lang-java linenums">package com.yeahbutstill.sonarqube.demo.service.implementation;
+
+import com.yeahbutstill.sonarqube.demo.constant.ConstantMess;
+import com.yeahbutstill.sonarqube.demo.domain.dao.Employee;
+import com.yeahbutstill.sonarqube.demo.domain.dto.common.BaseResponse;
+import com.yeahbutstill.sonarqube.demo.domain.dto.external.EmployeeDtoRequest;
+import com.yeahbutstill.sonarqube.demo.domain.dto.external.EmployeeDtoResponse;
+import com.yeahbutstill.sonarqube.demo.repository.EmployeeRepository;
+import com.yeahbutstill.sonarqube.demo.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L24">@Slf4j</span>
+@Service
+<span class="fc" id="L26">@RequiredArgsConstructor</span>
+@Transactional
+public class EmployeeServiceImpl implements EmployeeService {
+
+  private final ModelMapper modelMapper;
+  private final EmployeeRepository employeeRepository;
+
+  @Override
+  public ResponseEntity&lt;Object&gt; getEmployee(String request) {
+
+<span class="fc" id="L36">    log.info(&quot;begin get employee, with NIK {}&quot;, request);</span>
+
+<span class="fc" id="L38">    EmployeeDtoResponse employeeDtoResponse = null;</span>
+    try {
+<span class="fc" id="L40">      Optional&lt;Employee&gt; employee = Optional.ofNullable(employeeRepository.findByNik(request));</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">      if (employee.isEmpty()) {</span>
+<span class="fc" id="L42">        return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L43">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L44">            .body(</span>
+<span class="fc" id="L45">                BaseResponse.builder()</span>
+<span class="fc" id="L46">                    .localDateTime(LocalDateTime.now())</span>
+<span class="fc" id="L47">                    .data(null)</span>
+<span class="fc" id="L48">                    .message(ConstantMess.KEY_DATA_NOT_FOUND)</span>
+<span class="fc" id="L49">                    .statusCode(HttpStatus.NO_CONTENT.value())</span>
+<span class="fc" id="L50">                    .build());</span>
+      }
+
+<span class="nc" id="L53">      employeeDtoResponse = new EmployeeDtoResponse(employee.get());</span>
+<span class="fc" id="L54">    } catch (Exception exception) {</span>
+<span class="fc" id="L55">      log.error(&quot;failed get employee with nik, Error :  &quot; + exception);</span>
+<span class="nc" id="L56">    }</span>
+
+<span class="fc" id="L58">    return ResponseEntity.status(HttpStatus.OK)</span>
+<span class="fc" id="L59">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L60">        .body(</span>
+<span class="fc" id="L61">            BaseResponse.builder()</span>
+<span class="fc" id="L62">                .localDateTime(LocalDateTime.now())</span>
+<span class="fc" id="L63">                .data(employeeDtoResponse)</span>
+<span class="fc" id="L64">                .message(ConstantMess.KEY_SUCCESS)</span>
+<span class="fc" id="L65">                .statusCode(HttpStatus.OK.value())</span>
+<span class="fc" id="L66">                .build());</span>
+  }
+
+  @Override
+  public ResponseEntity&lt;Object&gt; insertEmployee(EmployeeDtoRequest request) {
+<span class="fc" id="L71">    log.info(&quot;begin insert employee, with param {}&quot;, request);</span>
+
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">    if (request != null) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">      if (request.getId() != null) {</span>
+<span class="fc" id="L75">        return ResponseEntity.status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L76">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L77">            .body(</span>
+<span class="fc" id="L78">                BaseResponse.builder()</span>
+<span class="fc" id="L79">                    .message(ConstantMess.KEY_INVALID_REQUEST)</span>
+<span class="fc" id="L80">                    .data(request)</span>
+<span class="fc" id="L81">                    .build());</span>
+      }
+
+      try {
+<span class="fc" id="L85">        Employee employees = modelMapper.map(request, Employee.class);</span>
+
+<span class="fc" id="L87">        employeeRepository.save(employees);</span>
+<span class="nc" id="L88">      } catch (Exception exception) {</span>
+<span class="nc" id="L89">        log.error(&quot;failed to insert employee, Error :  &quot; + exception);</span>
+<span class="fc" id="L90">      }</span>
+    }
+
+<span class="fc" id="L93">    return ResponseEntity.status(HttpStatus.OK)</span>
+<span class="fc" id="L94">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L95">        .body(</span>
+<span class="fc" id="L96">            BaseResponse.builder().message(ConstantMess.KEY_SUCCESS_CREATE).data(request).build());</span>
+  }
+
+  @Override
+  public ResponseEntity&lt;Object&gt; updateEmployee(EmployeeDtoRequest request) {
+<span class="fc" id="L101">    log.info(&quot;begin update employee, with param {}&quot;, request);</span>
+
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">    if (request != null) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">      if (request.getId() == null) {</span>
+<span class="fc" id="L105">        return ResponseEntity.status(HttpStatus.BAD_REQUEST)</span>
+<span class="fc" id="L106">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L107">            .body(</span>
+<span class="fc" id="L108">                BaseResponse.builder()</span>
+<span class="fc" id="L109">                    .message(ConstantMess.KEY_INVALID_REQUEST)</span>
+<span class="fc" id="L110">                    .data(request)</span>
+<span class="fc" id="L111">                    .build());</span>
+      }
+
+      try {
+<span class="fc" id="L115">        Employee employees = modelMapper.map(request, Employee.class);</span>
+
+<span class="fc" id="L117">        employeeRepository.save(employees);</span>
+<span class="nc" id="L118">      } catch (Exception exception) {</span>
+<span class="nc" id="L119">        log.error(&quot;failed to update employee, Error :  &quot; + exception);</span>
+<span class="fc" id="L120">      }</span>
+    }
+
+<span class="fc" id="L123">    return ResponseEntity.status(HttpStatus.OK)</span>
+<span class="fc" id="L124">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L125">        .body(</span>
+<span class="fc" id="L126">            BaseResponse.builder().message(ConstantMess.KEY_SUCCESS_UPDATE).data(request).build());</span>
+  }
+
+  @Override
+  public ResponseEntity&lt;Object&gt; deleteEmployee(Long request) {
+<span class="fc" id="L131">    log.info(&quot;begin delete employee, with param {}&quot;, request);</span>
+
+    try {
+<span class="fc" id="L134">      Optional&lt;Employee&gt; employee = employeeRepository.findById(request);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">      if (employee.isEmpty()) {</span>
+<span class="fc" id="L136">        return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L137">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L138">            .body(</span>
+<span class="fc" id="L139">                BaseResponse.builder()</span>
+<span class="fc" id="L140">                    .message(ConstantMess.KEY_DATA_NOT_FOUND)</span>
+<span class="fc" id="L141">                    .data(request)</span>
+<span class="fc" id="L142">                    .build());</span>
+      }
+
+<span class="fc" id="L145">      employeeRepository.delete(employee.get());</span>
+<span class="nc" id="L146">    } catch (Exception exception) {</span>
+<span class="nc" id="L147">      log.error(&quot;failed to delete employee, Error :  &quot; + exception);</span>
+<span class="fc" id="L148">    }</span>
+
+<span class="fc" id="L150">    return ResponseEntity.status(HttpStatus.OK)</span>
+<span class="fc" id="L151">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L152">        .body(</span>
+<span class="fc" id="L153">            BaseResponse.builder().message(ConstantMess.KEY_SUCCESS_DELETE).data(request).build());</span>
+  }
+
+  @Override
+  public ResponseEntity&lt;Object&gt; listEmployee() {
+<span class="fc" id="L158">    log.info(&quot;begin findAll employee&quot;);</span>
+
+<span class="fc" id="L160">    List&lt;EmployeeDtoResponse&gt; employeeDtoResponseList = new ArrayList&lt;&gt;();</span>
+    try {
+<span class="fc" id="L162">      List&lt;Employee&gt; employeesList = employeeRepository.findAll();</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">      if (employeesList.isEmpty()) {</span>
+<span class="fc" id="L164">        return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="fc" id="L165">            .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L166">            .body(</span>
+<span class="fc" id="L167">                BaseResponse.builder().message(ConstantMess.KEY_DATA_NOT_FOUND).data(null).build());</span>
+      }
+
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">      for (Employee employee : employeesList) {</span>
+<span class="nc" id="L171">        EmployeeDtoResponse employeeDtoResponse = new EmployeeDtoResponse(employee);</span>
+<span class="nc" id="L172">        employeeDtoResponseList.add(employeeDtoResponse);</span>
+<span class="nc" id="L173">      }</span>
+
+<span class="fc" id="L175">    } catch (Exception exception) {</span>
+<span class="fc" id="L176">      log.error(&quot;Failed findAll Employee, error : &quot; + exception);</span>
+<span class="nc" id="L177">    }</span>
+
+<span class="fc" id="L179">    return ResponseEntity.status(HttpStatus.OK)</span>
+<span class="fc" id="L180">        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L181">        .body(</span>
+<span class="fc" id="L182">            BaseResponse.builder()</span>
+<span class="fc" id="L183">                .message(ConstantMess.KEY_SUCCESS)</span>
+<span class="fc" id="L184">                .data(employeeDtoResponseList)</span>
+<span class="fc" id="L185">                .build());</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
